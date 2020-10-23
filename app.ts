@@ -2,6 +2,7 @@
 // http launch a server, send requests
 // http launch a SSL encoded server
 const bodyParser = require('body-parser');
+const errorController = require('./controllers/error')
 const express = require('express');
 const path = require('path');
 // const http = require('http');
@@ -20,11 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
-app.use((req, res, next) => {
-    res.status(404).render('404', {
-        pageTitle: 'Page Not Found'
-    });
-});
+app.use(errorController.get404);
 
 // Accepts array of handlers, executed for every incoming requests
 // app.use(middleware);
