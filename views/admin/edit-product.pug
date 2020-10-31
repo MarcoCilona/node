@@ -1,0 +1,15 @@
+extends ../layouts/main-layout.pug
+block styles
+    link(rel="stylesheet" href="/css/product.css")
+    link(rel="stylesheet" href="/css/forms.css")
+
+block content
+    main
+        - var action = editing ? 'edit-product' : 'add-product';
+        - var id = editing ? product.id : null;
+        - var title = editing ? product.title : '';
+        - var image = editing ? product.imageUrl : '';
+        - var price = editing ? product.price : null;
+        - var description = editing ? product.description : '';
+        - var button = editing ? 'Save' : 'Add product';
+        include ../includes/product-form

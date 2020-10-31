@@ -22,7 +22,8 @@ module.exports = class Product {
     description: string;
     price: string;
     
-    constructor({ title, imageUrl, description, price }) {
+    constructor({ id = null, title, imageUrl, description, price }) {
+        this.id = id ? +id : null;
         this.title = title;
         this.imageUrl = imageUrl || "https://www.asme.org/getmedia/c2c8ea5a-b690-4ba7-92bb-34bd1432862b/book_guide_hero_books.png?width=300&height=315&ext=.png";
         this.description = description;
@@ -30,9 +31,14 @@ module.exports = class Product {
     }
 
     save() {
-        this.id = Math.random();
         readFile(products => {
-            products.push(this);
+            if (this.id) {
+                const existingProductIndex = products.findIndex(prod => prod.id === +this.id)
+                products[existingProductIndex] = this;
+            } else {
+                this.id = Math.random();
+                products.push(this);
+            }
 
             fs.writeFile(_path, JSON.stringify(products), (_error) => {
                 console.error(_error)
@@ -50,5 +56,4 @@ module.exports = class Product {
             cb(product);
         })
     }
-
 }
