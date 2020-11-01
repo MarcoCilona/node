@@ -15,6 +15,8 @@ const readFile = (cb) => {
     });
 }
 
+const Cart = require('./cart');
+
 module.exports = class Product {
     id: number;
     title: string;
@@ -44,6 +46,19 @@ module.exports = class Product {
                 console.error(_error)
             });
         });
+    }
+
+    static deleteById(id) {
+        readFile(products => {
+            const product = products.find(prod => prod.id === +id);
+            const updatedProducts = products.filter(prod => prod.id !== +id);
+            fs.writeFile(_path, JSON.stringify(updatedProducts), err => {
+                console.error(err);
+                if(!err) {
+                    Cart.deleteProduct(id, product.price)
+                }
+            })
+        })
     }
 
     static fetchAll(cb) {

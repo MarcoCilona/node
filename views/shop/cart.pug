@@ -3,4 +3,14 @@ block styles
 
 block content
     main
-        | Hello from Cart
+        if(products && products.length)
+            .grid
+                each productData in products
+                    - var product = productData.product;
+                    li
+                        p #{product.title} (#{productData.quantity})
+                        form(action='/cart-delete-item' method='POST')
+                            input(type='hidden' name='id' value=product.id)
+                            button.btn(type='submit') Delete
+        else
+            h1 No products in cart
