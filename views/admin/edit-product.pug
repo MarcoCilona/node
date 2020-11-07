@@ -6,7 +6,7 @@ block styles
 block content
     main
         - var action = editing ? 'edit-product' : 'add-product';
-        - var id = editing ? product.id : null;
+        - var id = editing ? product._id : null;
         - var title = editing ? product.title : '';
         - var image = editing ? product.imageUrl : '';
         - var price = editing ? product.price : null;

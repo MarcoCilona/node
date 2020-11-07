@@ -7,7 +7,7 @@ exports.getAddProduct = (req, res, next) => {
     })
 }
 
-exports.getEditProduct = (req, res, next) => {
+exports.getEditProduct = async (req, res, next) => {
     const { id } = req.params;
     const { edit } = req.query;
 
@@ -15,21 +15,18 @@ exports.getEditProduct = (req, res, next) => {
         return res.redirect('/');
     }
 
-    AdminProduct.findById(+id, product => {
-        if (!product) {
-            return res.redirect('/');
-        }
-        res.render('admin/edit-product', {
-            pageTitle: 'Edit Product',
-            path: '/admin/edit-product',
-            editing: edit === 'true',
-            product
-        })
-    });
+    const product = await AdminProduct.findById(id);
+    if (!product) return res.redirect('/');
 
+    res.render('admin/edit-product', {
+        pageTitle: 'Edit Product',
+        path: '/admin/edit-product',
+        editing: edit === 'true',
+        product
+    });
 }
 
-exports.postEditProduct = (req, res, next) => {
+exports.postEditProduct = async (req, res, next) => {
     const { id, title, imageUrl, price, description } = req.body;
     const product = new AdminProduct({
         id,
@@ -42,9 +39,9 @@ exports.postEditProduct = (req, res, next) => {
     res.redirect('/admin/products');
 }
 
-exports.postDeleteProduct = (req, res, next) => {
+exports.postDeleteProduct = async (req, res, next) => {
     const { id } = req.body;
-    AdminProduct.deleteById(id)
+    await AdminProduct.deleteById(id);
     res.redirect('/admin/products');
 }
 
@@ -55,16 +52,16 @@ exports.postAddProduct = (req, res, next) => {
         description: req.body.description,
         price: req.body.price,
     });
-    product.save();
-    res.redirect('/products');
+    product.save().then((result) => {
+        res.redirect('/products');
+    });
 }
 
-exports.getProducts = (req, res, next) => {
-    AdminProduct.fetchAll((products) => {
-        res.render('admin/products', { 
-            pageTitle: 'Shop now!',
-            products,
-            path: '/admin/products'
-        });
+exports.getProducts = async (req, res, next) => {
+    const products = await AdminProduct.fetchAll();
+    res.render('admin/products', { 
+        pageTitle: 'Shop now!',
+        products,
+        path: '/admin/products'
     });
 }

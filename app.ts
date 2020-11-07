@@ -1,3 +1,4 @@
+require('dotenv').config();
 // import modules for creating a server and handle requests
 // http launch a server, send requests
 // http launch a SSL encoded server
@@ -6,6 +7,7 @@ const errorController = require('./controllers/error')
 const express = require('express');
 const path = require('path');
 // const http = require('http');
+import database from './util/database';
 
 import { router as adminRoutes } from './routes/admin';
 import { router as shopRoutes } from './routes/shop';
@@ -33,5 +35,8 @@ app.use(errorController.get404);
 // // By default uses localhost
 // server.listen(3000);
 
-// This is a shortcut to create server and listen for calls
-app.listen(3000);
+
+database.mongoConnect((client) => {
+    // This is a shortcut to create server and listen for calls
+    app.listen(3000);
+})
