@@ -23,7 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(async (req, res, next) => {
     const user = await User.findById("5fa69820244149128c7667d7");
-    req.user = user;
+
+    req.user = new User({ ...user });
     next();
 });
 app.use('/admin', adminRoutes);

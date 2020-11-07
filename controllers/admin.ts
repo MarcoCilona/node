@@ -1,4 +1,4 @@
-const AdminProduct = require('../models/product');
+import Product from '../models/product';
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/edit-product', {
@@ -15,7 +15,7 @@ exports.getEditProduct = async (req, res, next) => {
         return res.redirect('/');
     }
 
-    const product = await AdminProduct.findById(id);
+    const product = await Product.findById(id);
     if (!product) return res.redirect('/');
 
     res.render('admin/edit-product', {
@@ -28,7 +28,7 @@ exports.getEditProduct = async (req, res, next) => {
 
 exports.postEditProduct = async (req, res, next) => {
     const { id, title, imageUrl, price, description } = req.body;
-    const product = new AdminProduct({
+    const product = new Product({
         id,
         title,
         imageUrl,
@@ -41,12 +41,12 @@ exports.postEditProduct = async (req, res, next) => {
 
 exports.postDeleteProduct = async (req, res, next) => {
     const { id } = req.body;
-    await AdminProduct.deleteById(id);
+    await Product.deleteById(id);
     res.redirect('/admin/products');
 }
 
 exports.postAddProduct = (req, res, next) => {
-    const product = new AdminProduct({
+    const product = new Product({
         title: req.body.title,
         imageUrl: req.body.imageUrl,
         description: req.body.description,
@@ -59,7 +59,7 @@ exports.postAddProduct = (req, res, next) => {
 }
 
 exports.getProducts = async (req, res, next) => {
-    const products = await AdminProduct.fetchAll();
+    const products = await Product.fetchAll();
     res.render('admin/products', { 
         pageTitle: 'Shop now!',
         products,

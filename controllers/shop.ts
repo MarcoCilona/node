@@ -1,9 +1,8 @@
-const ShopProduct = require('../models/product');
-const ShopCart = require('../models/cart');
+import Product from '../models/product';
 
 
 exports.getProducts = async (req, res, next) => {
-    const products = await ShopProduct.fetchAll();
+    const products = await Product.fetchAll();
     res.render('shop/product-list', { 
         pageTitle: 'Shop now!',
         products,
@@ -15,7 +14,7 @@ exports.getProducts = async (req, res, next) => {
 exports.getProduct = async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await ShopProduct.findById(id);
+    const product = await Product.findById(id);
     if (!product) res.redirect('/products');
     res.render('shop/product-detail', { 
         pageTitle: product.title,
@@ -25,7 +24,7 @@ exports.getProduct = async (req, res, next) => {
 }
 
 exports.getIndex = (req, res, next) => {
-    // ShopProduct.fetchAll((products) => {
+    // Product.fetchAll((products) => {
     //     res.render('shop/index', { 
     //         pageTitle: 'Shop now!',
     //         products,
@@ -34,43 +33,35 @@ exports.getIndex = (req, res, next) => {
     // });
 }
 
-exports.getCart = (req, res, next) => {
-    ShopCart.getProducts((cart => {
-        // ShopProduct.fetchAll(products => {
-        //     const cartProducts = [];
-        //     for (const product of products) {
-        //         const productData = cart.products.find(prod => prod.id === product.id);
-        //         if (productData) {
-        //             cartProducts.push({
-        //                 product,
-        //                 quantity: productData.quantity
-        //             });
-        //         }
-        //     }
+exports.getCart = async (req, res, next) => {
+    const user = req.user;
+    const products = await user.getProducts();
 
-        //     res.render('shop/cart', {
-        //         path: '/cart',
-        //         pageTitle: 'Your cart',
-        //         products: cartProducts,
-        //         total: cart.totalPrice
-        //     })
-        // })
-    }))
+    res.render('shop/cart', {
+        path: '/cart',
+        pageTitle: 'Your cart',
+        products: [],
+        total: 2
+        }
+    )
 }
 
-exports.addToCart = (req, res, next) => {
+exports.addToCart = async (req, res, next) => {
     const { id } = req.body;
-    
-    // ShopProduct.findById(+id, product => {
-    //     ShopCart.deleteProduct(+id, product.price);
-    //     res.redirect('/cart');
-    // })
-}
+    const user = req.user;
+    const product = await Product.findById(id);
 
+    const cart = await user.addToCart(product);
+
+    if (!cart) res.redirect('/products');
+    
+    res.redirect('/cart');
+}
+ 
 exports.postCartDeleteItem = (req, res, next) => {
     const { id } = req.body;
 
-    // ShopProduct.findById(+id, product => {
+    // Product.findById(+id, product => {
     //     ShopCart.deleteProduct(+id, product.price)
     //     res.render('shop/cart', {
     //         path: '/cart',
