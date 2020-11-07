@@ -8,6 +8,7 @@ const express = require('express');
 const path = require('path');
 // const http = require('http');
 import database from './util/database';
+import User from './models/user';
 
 import { router as adminRoutes } from './routes/admin';
 import { router as shopRoutes } from './routes/shop';
@@ -20,6 +21,11 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(async (req, res, next) => {
+    const user = await User.findById("5fa69820244149128c7667d7");
+    req.user = user;
+    next();
+});
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
