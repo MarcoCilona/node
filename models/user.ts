@@ -55,11 +55,6 @@ export default class User {
         );
     }
 
-    getProducts() {
-        const db = database.getDb();
-        return db.collection('users')
-    }
-
     static findById(userId) {
         const db = database.getDb();
         const _id = new mongodb.ObjectId(userId);

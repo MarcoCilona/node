@@ -35,13 +35,19 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = async (req, res, next) => {
     const user = req.user;
-    const products = await user.getProducts();
+    const productsIds = user.cart.items.map(({ productId }) => productId);
+    const backendProducts = await Product.findProducts(productsIds);
+
+    const products = backendProducts.map(product => ({
+        ...product,
+        quantity: user.cart.items.find(item => item.productId.toString() === product._id.toString()).quantity
+    }))
 
     res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your cart',
-        products: [],
-        total: 2
+        products: products,
+        total: user.cart.totalPrice
         }
     )
 }

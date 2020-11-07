@@ -43,4 +43,16 @@ export default class Product {
         return db.collection('products').find({ _id: new mongodb.ObjectId(id) }).next();
     }
 
+    static findProducts(productsIds) {
+        const db = database.getDb();
+
+        return db.collection('products').find(
+            {
+                _id: { 
+                    $in: productsIds
+                }
+            }
+        ).toArray();
+    }
+
 }
