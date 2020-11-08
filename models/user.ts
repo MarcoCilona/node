@@ -19,7 +19,7 @@ export default class User {
         const db = database.getDb();
         return db.collection('users').insertOne(this);
     }
-    
+
     addToCart(product: Product) {
         const db = database.getDb();
         const productId = new mongodb.ObjectId(product._id);
