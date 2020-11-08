@@ -7,7 +7,7 @@ export default class Product {
     title: string;
     imageUrl: string;
     description: string;
-    price: string;
+    price: number;
     userId: ObjectId;
     
     constructor({title, imageUrl, description, price, userId = null, id = null }) {

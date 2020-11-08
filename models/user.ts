@@ -55,6 +55,27 @@ export default class User {
         );
     }
 
+    deleteFromCart(product: Product) {
+        const db = database.getDb();
+        const updatedCartItems = this.cart.items.filter(item => item.productId.toString() !== product._id.toString());
+        const removedProduct = this.cart.items.find(item => item.productId.toString() === product._id.toString());
+        const totalPrice = this.cart.totalPrice - (product.price * removedProduct.quantity);
+
+        return db.collection('users').updateOne(
+            {
+                _id: this._id
+            },
+            {
+                $set: {
+                    cart: {
+                        items: updatedCartItems,
+                        totalPrice
+                    }
+                }
+            }
+        )
+    }
+
     static findById(userId) {
         const db = database.getDb();
         const _id = new mongodb.ObjectId(userId);

@@ -64,16 +64,15 @@ exports.addToCart = async (req, res, next) => {
     res.redirect('/cart');
 }
  
-exports.postCartDeleteItem = (req, res, next) => {
+exports.postCartDeleteItem = async (req, res, next) => {
     const { id } = req.body;
+    const user = req.user;
+    const product = await Product.findById(id);
+    const cart = await user.deleteFromCart(product);
+    
+    if (!cart) res.redirect('/products');
 
-    // Product.findById(+id, product => {
-    //     ShopCart.deleteProduct(+id, product.price)
-    //     res.render('shop/cart', {
-    //         path: '/cart',
-    //         pageTitle: 'Your cart',
-    //     })
-    // });
+    res.redirect('cart');
 }
 
 exports.getOrders = (req, res, next) => {
